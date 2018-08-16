@@ -1,0 +1,29 @@
+type Photo {
+  id: ID!
+  ownerId: ID!
+  private: Boolean!
+  caption: String
+  owner: User!
+  width: Int!
+  height: Int!
+  image: String!
+  createdAt: DateTime!
+}
+
+type Query {
+  photos: [Photo!]!
+  photo(id: ID!): Photo!
+}
+
+type Mutation {
+  uploadPhoto(image: Upload!, caption: String, private: Boolean): Photo
+    @loggedIn
+  editPhoto(id: ID!, caption: String, private: Boolean): Photo @loggedIn
+  deletePhoto(id: ID!): Boolean @loggedIn
+}
+
+type Subscription {
+  photoAdded: Photo
+  photoEdited: Photo
+  photoDeleted: Photo
+}

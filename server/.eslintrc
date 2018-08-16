@@ -1,0 +1,27 @@
+{
+    "root": true,
+    "extends": ["airbnb-base"],
+    "parserOptions": {
+        "ecmaVersion": 8,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "modules": true
+        }
+    },
+    "env": {
+        "node": true,
+        "es6": true
+    },
+    "rules": {
+        "indent": ["error", 4],
+        "max-len": [
+            "error",
+            {
+                "code": 120,
+                "ignoreStrings": true,
+                "ignoreTemplateLiterals": true
+            }
+        ],
+        "import/no-amd": ["error", 4]
+    }
+}

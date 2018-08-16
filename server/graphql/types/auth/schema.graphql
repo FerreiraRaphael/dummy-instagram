@@ -1,0 +1,7 @@
+directive @loggedIn on OBJECT | FIELD_DEFINITION
+
+type Mutation {
+  register(username: String!, password: String!): User!
+  login(username: String!, password: String!): User!
+  logout: Boolean! @loggedIn
+}

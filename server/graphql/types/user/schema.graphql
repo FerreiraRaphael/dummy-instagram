@@ -1,0 +1,10 @@
+type User {
+  id: ID!
+  name: String!
+  photos: [Photo!]!
+}
+
+type Query {
+  me: User @loggedIn
+  user(name: String!): User!
+}

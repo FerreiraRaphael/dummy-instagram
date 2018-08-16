@@ -23,20 +23,22 @@ A dummy instagram clone, where users can register with a username and password, 
 Setup Environment:
 
 - Install dev dependencies for the environment, at the project root, this will setup the pre commit hook for auto format code when committing.
-> npm install
+```
+npm install
+```
 
 Running the server:
 
 - Install Server dependencies
-> cd server && npm install
+`cd server && npm install`
 - Seed Database
-> npm run seed test
+`npm run seed test`
 - Start the graphql server
-> npm run watch
+`npm run watch`
 
 Running the client:
 
 - Install Client dependencies
-> cd client && npm install
+`cd client && npm install`
 - Start the development client's server
-> npm start
+`npm start`

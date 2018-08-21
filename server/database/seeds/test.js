@@ -1,4 +1,8 @@
 const fetch = require('node-fetch');
+const bcrypt = require('bcrypt');
+
+const hashPassword = (password) =>
+  bcrypt.genSalt(10).then((salt) => bcrypt.hash(password, salt));
 
 const fetchPlaceholderImage = async (type, width, height) => {
   const url = `http://place${type}.com/${width}/${height}`;
@@ -7,13 +11,17 @@ const fetchPlaceholderImage = async (type, width, height) => {
   return imageBuffer.toString('base64');
 };
 
-const testUsers = [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }].map(
-  ({ id, name }) => ({
-    _id: id,
-    name,
-    password: 'testPassword'
-  })
-);
+const testUsers = () =>
+  Promise.all(
+    [{ id: 1, name: 'Alice' }, { id: 2, name: 'Bob' }].map(
+      async ({ id, name }) => ({
+        _id: id,
+        name,
+        password: await hashPassword('testPassword'),
+        version: 1,
+      }),
+    ),
+  );
 
 const testPhotos = async () =>
   Promise.all(
@@ -24,7 +32,7 @@ const testPhotos = async () =>
         caption: 'Cat 1',
         animal: 'kitten',
         width: 800,
-        height: 600
+        height: 600,
       },
       {
         id: 2,
@@ -32,7 +40,7 @@ const testPhotos = async () =>
         caption: 'Cat 2',
         animal: 'kitten',
         width: 1200,
-        height: 800
+        height: 800,
       },
       {
         id: 3,
@@ -40,7 +48,7 @@ const testPhotos = async () =>
         caption: 'Bear!',
         animal: 'bear',
         width: 800,
-        height: 600
+        height: 600,
       },
       {
         id: 4,
@@ -49,22 +57,26 @@ const testPhotos = async () =>
         animal: 'ape',
         isPrivate: true,
         width: 800,
-        height: 600
-      }
+        height: 600,
+      },
     ].map(async ({ id, animal, width, height, isPrivate, ...image }) => ({
       _id: id,
       ...image,
       width,
       height,
-      private: !!isPrivate,
+      isPrivate: !!isPrivate,
       image: await fetchPlaceholderImage(animal, width, height),
-      createdAt: new Date()
-    }))
+      createdAt: new Date(),
+    })),
   );
 
+const idSeq = [{ _id: 'photo', value: 5 }, { _id: 'user', value: 3 }];
+
 module.exports = {
-  up: async db => {
-    await db.users.insert(testUsers);
+  up: async (db) => {
+    await db.users.insert(await testUsers());
     await db.photos.insert(await testPhotos());
-  }
+    await db.idSeq.insert(idSeq);
+    await db.users.ensureIndex({ fieldName: 'name', unique: true });
+  },
 };

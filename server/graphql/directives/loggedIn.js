@@ -14,15 +14,20 @@ class LoggedInDirective extends SchemaDirectiveVisitor {
   }
 
   static ensureFieldsWrapped(type) {
-    if (type.loginWrapped) return;
     type.loginWrapped = true;
 
-    Object.values(type.getFields()).forEach(field => {
+    Object.values(type.getFields()).forEach((field) => {
       const { resolve = defaultFieldResolver } = field;
       const requiresLogIn = type.requiresLogIn || field.requiresLogIn;
       if (requiresLogIn) {
-        field.resolve = function loggedInResolver(root, args, ctx, ...rest) {
-          if (requiresLogIn && !ctx.user) {
+        field.resolve = async function loggedInResolver(
+          root,
+          args,
+          ctx,
+          ...rest
+        ) {
+          const user = await ctx.getCurrentUser();
+          if (requiresLogIn && !user) {
             throw new Error('You must be logged in to access this data');
           }
           return resolve.call(this, root, args, ctx, ...rest);

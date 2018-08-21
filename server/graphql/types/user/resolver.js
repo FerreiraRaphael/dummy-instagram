@@ -1,16 +1,17 @@
+/* eslint-disable no-underscore-dangle */
 module.exports = {
   resolver: {
     Query: {
-      me: (root, args, { user, db }) =>
-        db.users.findOne({ _id: parseInt(user.id, 10) }),
-      user: (root, { name }, { db }) => db.users.findOne({ name })
+      me: (root, args, { getCurrentUser }) => getCurrentUser(),
+      user: (root, { name }, { UserService }) =>
+        UserService.findOneUser({ name }),
     },
     User: {
-      id: ({ _id }) => _id
+      id: ({ _id }) => _id,
     },
     Photo: {
-      owner: ({ ownerId }, args, { db }) =>
-        db.users.findOne({ _id: parseInt(ownerId, 10) })
-    }
-  }
+      owner: ({ ownerId }, args, { UserService }) =>
+        UserService.findOneUser({ _id: parseInt(ownerId, 10) }),
+    },
+  },
 };

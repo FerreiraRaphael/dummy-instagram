@@ -7,7 +7,7 @@ const createSchema = async () => {
   return makeExecutableSchema({
     typeDefs: schema,
     resolvers: resolver,
-    schemaDirectives
+    schemaDirectives,
   });
 };
 

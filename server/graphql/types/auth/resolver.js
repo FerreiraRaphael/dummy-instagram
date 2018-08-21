@@ -1,17 +1,15 @@
 module.exports = {
   resolver: {
     Mutation: {
-      register: async (root, args, context) => {
-        // TODO: Handle user registration
-      },
+      register: (root, { username, password }, { UserService, AuthService }) =>
+        UserService.createUser({ username, password }).then(() =>
+          AuthService.login({ username, password }),
+        ),
 
-      login: async (root, args, context) => {
-        // TODO: Handle user login here
-      },
+      login: async (root, { username, password }, { AuthService }) =>
+        AuthService.login({ username, password }),
 
-      logout: async (root, args, context) => {
-        // TODO: Handle user logout here
-      }
-    }
-  }
+      logout: async (root, args, { AuthService }) => AuthService.logout(),
+    },
+  },
 };

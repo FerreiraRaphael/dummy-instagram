@@ -1,7 +1,7 @@
 type Photo {
   id: ID!
   ownerId: ID!
-  private: Boolean!
+  isPrivate: Boolean!
   caption: String
   owner: User!
   width: Int!
@@ -16,14 +16,14 @@ type Query {
 }
 
 type Mutation {
-  uploadPhoto(image: Upload!, caption: String, private: Boolean): Photo
+  uploadPhoto(image: Upload!, caption: String, isPrivate: Boolean): Photo
     @loggedIn
-  editPhoto(id: ID!, caption: String, private: Boolean): Photo @loggedIn
+  editPhoto(id: ID!, caption: String, isPrivate: Boolean): Photo @loggedIn
   deletePhoto(id: ID!): Boolean @loggedIn
 }
 
 type Subscription {
   photoAdded: Photo
   photoEdited: Photo
-  photoDeleted: Photo
+  photoDeleted: ID
 }

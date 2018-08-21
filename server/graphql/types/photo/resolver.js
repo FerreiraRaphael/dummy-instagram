@@ -1,77 +1,60 @@
+const { withFilter } = require('graphql-subscriptions');
+const { pubsub } = require('../../subscritions');
+const { PHOTO_ADDED, PHOTO_DELETED, PHOTO_EDITED } = require('./service');
+
 /* eslint-disable no-underscore-dangle */
 module.exports = {
   resolver: {
     Photo: { id: ({ _id }) => _id },
     User: {
-      photos: (owner, args, { user, db }) =>
-        db.photos
-          .cfind({
-            $and: [
-              { ownerId: owner._id },
-              user
-                ? {
-                    $or: {
-                      $and: { private: true, ownerId: user.id },
-                      private: false
-                    }
-                  }
-                : { private: false }
-            ]
-          })
-          .sort({ createdAt: -1 })
-          .exec()
+      photos: (owner, args, { PhotoService }) =>
+        PhotoService.findUserPhotos(owner._id),
     },
     Query: {
-      photos: (root, args, { user, db }) =>
-        db.photos
-          .cfind(
-            user
-              ? {
-                  $or: {
-                    $and: { private: true, ownerId: parseInt(user.id, 10) },
-                    private: false
-                  }
-                }
-              : { private: false }
-          )
-          .sort({ createdAt: -1 })
-          .exec(),
-      photo: (root, { id }, { db, user }) =>
-        db.photos.findOne({
-          $and: [
-            { _id: parseInt(id, 10) },
-            user
-              ? {
-                  $or: {
-                    $and: { private: true, ownerId: user.id },
-                    private: false
-                  }
-                }
-              : { private: false }
-          ]
-        })
+      photos: (root, args, { PhotoService }) => PhotoService.findPhotos(),
+      photo: (root, { id }, { PhotoService }) => PhotoService.findPhoto(id),
     },
     Mutation: {
-      uploadPhoto: async (root, args, { user }) => {
-        // TODO: handle uploadPhoto
-      },
-      editPhoto: async (root, args, { user }) => {
-        // TODO: handle editPhoto
-      },
-      deletePhoto: async (root, args, { user }) => {
-        // TODO: handle deletePhoto
-      }
+      uploadPhoto: (root, { image, caption, isPrivate }, { PhotoService }) =>
+        PhotoService.uploadPhoto({ image, caption, isPrivate }).then(
+          (photo) => {
+            pubsub.publish(PHOTO_ADDED, { [PHOTO_ADDED]: photo });
+            return photo;
+          },
+        ),
+      editPhoto: async (root, { id, caption, isPrivate }, { PhotoService }) =>
+        PhotoService.editPhoto({ id, caption, isPrivate }).then((photo) => {
+          pubsub.publish(PHOTO_EDITED, { [PHOTO_EDITED]: photo });
+          return photo;
+        }),
+      deletePhoto: async (root, { id }, { PhotoService }) =>
+        PhotoService.deletePhoto(id).then((deleted) => {
+          if (deleted) {
+            pubsub.publish(PHOTO_DELETED, { [PHOTO_DELETED]: id });
+          }
+          return deleted;
+        }),
     },
     Subscription: {
-      photoAdded: async (root, args, ctx) => {
-        // TODO: handle photoAdded Subscription
+      photoAdded: {
+        subscribe: withFilter(
+          () => pubsub.asyncIterator([PHOTO_ADDED]),
+          ({ photoAdded }, args, { getCurrentUser }) => {
+            if (photoAdded.isPrivate) {
+              return getCurrentUser().then(
+                (user) => user && photoAdded.ownerId === user._id,
+              );
+            }
+            return true;
+          },
+        ),
       },
-      photoEdited: async (root, args, ctx) => {
-        // TODO: handle photoEdited Subscription
+      photoEdited: {
+        subscribe: () => pubsub.asyncIterator([PHOTO_EDITED]),
       },
-      photoDeleted: async (root, args, ctx) => {
-        // TODO: handle photoDeleted Subscription
-      }
-    }
-  }
+      photoDeleted: {
+        subscribe: () => pubsub.asyncIterator([PHOTO_DELETED]),
+      },
+    },
+  },
 };

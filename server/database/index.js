@@ -3,12 +3,18 @@ const path = require('path');
 const Datastore = require('nedb-promise');
 const pkg = require('../package.json');
 
-const defaultDatabaseFilename = () => path.join(homedir(), `.${pkg.name}`);
+const defaultDatabaseFilename = path.join(
+  homedir(),
+  'databases',
+  `.${pkg.name}`,
+);
 
-const modelNames = ['users', 'photos'];
+const modelNames = ['idSeq', 'users', 'photos'];
+
+console.log(defaultDatabaseFilename);
 
 const createDatabase = ({
-  filename = defaultDatabaseFilename(),
+  filename = defaultDatabaseFilename,
   autoload = true,
   ...rest
 } = {}) =>
@@ -18,10 +24,10 @@ const createDatabase = ({
       [model]: new Datastore({
         filename: `${filename}.${model}.db`,
         autoload,
-        ...rest
-      })
+        ...rest,
+      }),
     }),
-    {}
+    {},
   );
 
 const seedDatabase = async (query, seedName) => {

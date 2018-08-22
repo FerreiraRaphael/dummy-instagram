@@ -13,7 +13,6 @@ function formatBase64Url(string) {
 export class PhotoForm extends React.Component {
   constructor(props) {
     super(props);
-    console.log(props);
     this.state = {
       imageFile: null,
       image: formatBase64Url(props.initialValue.image),

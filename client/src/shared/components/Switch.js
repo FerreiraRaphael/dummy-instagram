@@ -11,6 +11,7 @@ export const Switch = ({ id, value, onChange, label }) => (
       value={value}
       className="Switch"
       type="checkbox"
+      checked={value}
     />
   </div>
 );

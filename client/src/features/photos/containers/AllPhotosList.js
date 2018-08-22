@@ -89,7 +89,7 @@ export default () => (
                   if (!subscriptionData.data) return prev;
                   const { photoEdited } = subscriptionData.data;
                   if (
-                    (!user || (user && user.id !== photoEdited.ownerId)) &&
+                    (!user || (user && user.id !== photoEdited.owner.id)) &&
                     photoEdited.isPrivate
                   ) {
                     const index = prev.photos.findIndex(

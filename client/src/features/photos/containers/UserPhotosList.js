@@ -5,7 +5,7 @@ import { GET_PHOTO_ADDED } from '../graphql/photoAdded';
 import { GET_PHOTO_DELETED } from '../graphql/photoDeleted';
 import { GET_PHOTO_EDITED } from '../graphql/photoEdited';
 import { PhotoList } from '../components/PhotoList';
-import { UserContext } from '../../../core/UserContext';
+import { CurrentUser } from '../../auth/graphql/currentUser';
 
 class UserPhotosList extends React.Component {
   componentDidMount() {
@@ -55,8 +55,8 @@ UserPhotosList.defaultProps = {
 };
 
 const UserPhotosListWrapped = ({ username }) => (
-  <UserContext.Consumer>
-    {({ user }) => (
+  <CurrentUser>
+    {({ currentUser }) => (
       <UserPhotos variables={{ name: username }}>
         {({ subscribeToMore, ...result }) => (
           <UserPhotosList
@@ -69,7 +69,10 @@ const UserPhotosListWrapped = ({ username }) => (
                   const { photoAdded } = subscriptionData.data;
                   return {
                     ...prev,
-                    photos: [photoAdded, ...prev.photos],
+                    user: {
+                      ...prev.user,
+                      photos: [photoAdded, ...prev.user.photos],
+                    },
                   };
                 },
               })
@@ -80,15 +83,19 @@ const UserPhotosListWrapped = ({ username }) => (
                 updateQuery(prev, { subscriptionData }) {
                   if (!subscriptionData.data) return prev;
                   const { photoDeleted } = subscriptionData.data;
-                  const index = prev.photos.findIndex(
+                  const index = prev.user.photos.findIndex(
                     (photo) => photo.id === photoDeleted,
                   );
                   if (index !== -1) {
                     return {
-                      photos: [
-                        ...prev.photos.slice(0, index),
-                        ...prev.photos.slice(index + 1),
-                      ],
+                      ...prev,
+                      user: {
+                        ...prev.user,
+                        photos: [
+                          ...prev.user.photos.slice(0, index),
+                          ...prev.user.photos.slice(index + 1),
+                        ],
+                      },
                     };
                   }
                   return prev;
@@ -102,18 +109,24 @@ const UserPhotosListWrapped = ({ username }) => (
                   if (!subscriptionData.data) return prev;
                   const { photoEdited } = subscriptionData.data;
                   if (
-                    (!user || (user && user.id !== photoEdited.ownerId)) &&
+                    (!currentUser ||
+                      (currentUser &&
+                        currentUser.id !== photoEdited.owner.id)) &&
                     photoEdited.isPrivate
                   ) {
-                    const index = prev.photos.findIndex(
+                    const index = prev.user.photos.findIndex(
                       (photo) => photo.id === photoEdited.id,
                     );
                     if (index !== -1) {
                       return {
-                        photos: [
-                          ...prev.photos.slice(0, index),
-                          ...prev.photos.slice(index + 1),
-                        ],
+                        ...prev,
+                        user: {
+                          ...prev.user,
+                          photos: [
+                            ...prev.user.photos.slice(0, index),
+                            ...prev.user.photos.slice(index + 1),
+                          ],
+                        },
                       };
                     }
                   }
@@ -125,7 +138,7 @@ const UserPhotosListWrapped = ({ username }) => (
         )}
       </UserPhotos>
     )}
-  </UserContext.Consumer>
+  </CurrentUser>
 );
 
 UserPhotosListWrapped.propTypes = {

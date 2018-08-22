@@ -25,6 +25,7 @@ const UploadPhotoForm = ({ history, id }) => (
               onCompleted={() => {
                 setLoadingLayout(false);
                 history.push('/');
+                window.location.reload();
               }}
               onError={() => {
                 setLoadingLayout(false);
@@ -35,6 +36,7 @@ const UploadPhotoForm = ({ history, id }) => (
                   onCompleted={() => {
                     setLoadingLayout(false);
                     history.push(`/photo/${id}`);
+                    window.location.reload();
                   }}
                   onError={() => {
                     setLoadingLayout(false);
@@ -42,6 +44,7 @@ const UploadPhotoForm = ({ history, id }) => (
                 >
                   {(editPhotoMutation) => (
                     <PhotoForm
+                      isNew={false}
                       initialValue={data ? data.photo : {}}
                       id="UploadPhotoForm"
                       onSubmit={({ caption, isPrivate }) => {

@@ -12,6 +12,7 @@ const UploadPhotoForm = ({ history }) => (
         onCompleted={() => {
           setLoadingLayout(false);
           history.push('/');
+          window.location.reload();
         }}
         onError={() => {
           setLoadingLayout(false);

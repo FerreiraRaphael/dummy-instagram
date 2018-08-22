@@ -39,8 +39,9 @@ export const PhotoPreview = ({ loading, photo }) => {
             className="PhotoPreview-image"
             style={{
               backgroundImage: `url('data:image/jpeg;base64,${photo.image}')`,
-              width: BASE_WIDTH,
+              width: '100%',
               height: (photo.height / photo.width) * BASE_WIDTH,
+              backgroundRepeat: 'no-repeat',
             }}
           />
           <div className="PhotoPreview-metadata">

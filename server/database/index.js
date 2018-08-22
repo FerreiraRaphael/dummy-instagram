@@ -11,8 +11,6 @@ const defaultDatabaseFilename = path.join(
 
 const modelNames = ['idSeq', 'users', 'photos'];
 
-console.log(defaultDatabaseFilename);
-
 const createDatabase = ({
   filename = defaultDatabaseFilename,
   autoload = true,

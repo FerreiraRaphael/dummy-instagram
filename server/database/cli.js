@@ -4,7 +4,7 @@ const { createDatabase, seedDatabase } = require('./index');
 require('yargs').command(
   'seed <name>',
   'seed the database',
-  yargs =>
+  (yargs) =>
     yargs.positional('name', { describe: 'the name of the seed to run' }),
   async ({ name }) => {
     const db = await createDatabase();
@@ -15,6 +15,6 @@ require('yargs').command(
     } catch (error) {
       console.error('Failed!', error); // eslint-disable-line no-console
     }
-  }
+  },
 ).argv;
 /* eslint-enable no-unused-expressions */

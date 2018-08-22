@@ -1,0 +1,27 @@
+.LoginPage {
+  max-width: 400px;
+  margin: auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.LoginPage ul {
+  list-style: none;
+  margin: 0;
+  padding-top: 0.5rem;
+  text-align: right;
+}
+
+.LoginPage h3 {
+  margin-bottom: 1rem;
+}
+
+.LoginPage button {
+  width: 100%;
+}
+
+.LoginPage-card {
+  padding: 0.5rem;
+}

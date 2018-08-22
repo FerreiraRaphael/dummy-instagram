@@ -1,17 +1,52 @@
 .App {
+  height: 100%;
   text-align: center;
+  position: relative;
 }
 
 .App-header {
-  background-color: #222;
+  height: 100%;
   padding: 20px;
   color: white;
+  background-color: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.0975);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+  transition: height 0.2s ease-in-out;
+  height: 65px;
 }
 
-.App-title {
-  font-size: 1.5em;
+.App-header-content {
+  height: 100%;
+  max-width: 700px;
+  margin: auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
 }
 
-.App-intro {
-  font-size: large;
+.App-header-content a {
+  margin: 0 0.5rem;
+}
+
+.App-content {
+  height: 100%;
+  max-width: 700px;
+  padding: 5px;
+  margin: auto;
+  background-color: #fafafa;
+  margin-top: 70px;
+}
+
+.App-overlay {
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  background: #00000050;
+  opacity: 0.7;
+  pointer-events: none;
+  user-select: none;
+  z-index: 1000;
 }

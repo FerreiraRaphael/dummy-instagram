@@ -1,10 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import './TextInput.css';
+
 export const TextInput = ({ id, type, value, onChange, label }) => (
-  <div>
+  <div className="form-group">
     <label htmlFor={id}>{label}</label>
-    <input id={id} type={type} value={value} onChange={(e) => onChange(e)} />
+    <input
+      className="form-control"
+      id={id}
+      type={type}
+      value={value}
+      onChange={(e) => onChange(e)}
+    />
   </div>
 );
 

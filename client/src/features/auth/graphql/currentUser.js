@@ -26,11 +26,11 @@ export const CurrentUser = ({ children }) => (
                 setCurrentUser(data.me);
               }
             }}
-          >
-            {({ data, loading, error }) => {
-              const currentUser = error || loading ? null : data.me;
-              return children({ currentUser, loading });
+            onError={() => {
+              setCurrentUser(null);
             }}
+          >
+            {({ loading }) => children({ currentUser: user, loading })}
           </Query>
         );
       }

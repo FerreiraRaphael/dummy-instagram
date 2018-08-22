@@ -9,10 +9,19 @@ const LOGOUT = gql`
   }
 `;
 
-export const Logout = ({ children }) => (
-  <Mutation mutation={LOGOUT}>{children}</Mutation>
+export const Logout = ({ children, onError, onCompleted }) => (
+  <Mutation onCompleted={onCompleted} onError={onError} mutation={LOGOUT}>
+    {children}
+  </Mutation>
 );
 
 Logout.propTypes = {
+  onError: PropTypes.func,
+  onCompleted: PropTypes.func,
   children: PropTypes.func.isRequired,
+};
+
+Logout.defaultProps = {
+  onError: () => {},
+  onCompleted: () => {},
 };

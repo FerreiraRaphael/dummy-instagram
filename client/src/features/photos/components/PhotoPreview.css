@@ -16,3 +16,18 @@
   width: 600px;
   height: 400px;
 }
+
+.PhotoPreview-owner {
+  text-align: left;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.PhotoPreview-metadata {
+  text-align: left;
+  padding: 0.5rem 1rem;
+  white-space: normal;
+}

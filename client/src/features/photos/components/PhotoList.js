@@ -5,7 +5,7 @@ import Photo from '../containers/Photo';
 export const PhotoList = ({ loading, photos }) => {
   if (loading) return <div>Loading...</div>;
   return (
-    <div className="PhotoList">
+    <div style={{ maxWidth: 600, margin: 'auto' }}>
       {photos.map((photo) => (
         <Photo
           key={photo.id}

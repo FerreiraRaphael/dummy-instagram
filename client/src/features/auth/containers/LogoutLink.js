@@ -7,27 +7,18 @@ import { UserContext } from '../../../core/UserContext';
 const LogoutLink = ({ history }) => (
   <UserContext.Consumer>
     {({ clearContext }) => (
-      <Logout>
+      <Logout
+        onCompleted={() => {
+          clearContext();
+          history.push('/');
+        }}
+        onError={() => {
+          clearContext();
+          history.push('/');
+        }}
+      >
         {(logoutMutation) => (
-          <button
-            onClick={() =>
-              logoutMutation({
-                update(
-                  proxy,
-                  {
-                    data: { logout },
-                  },
-                ) {
-                  if (logout) {
-                    clearContext();
-                    history.push('/');
-                  }
-                },
-              })
-            }
-          >
-            Logout
-          </button>
+          <button onClick={() => logoutMutation()}>Logout</button>
         )}
       </Logout>
     )}

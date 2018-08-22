@@ -1,13 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import './PhotoPreview.css';
+import { Card } from '../../../shared/components/Card';
 
 const BASE_WIDTH = 600;
 
 export const PhotoPreview = ({ loading, photo }) => {
   if (loading) {
     return (
-      <div className="PhotoPreview loading">
+      <Card className="PhotoPreview loading">
         <div
           className="PhotoPreview-image"
           style={{ width: BASE_WIDTH, height: BASE_WIDTH }}
@@ -15,12 +17,15 @@ export const PhotoPreview = ({ loading, photo }) => {
           &nbsp;
         </div>
         <div className="PhotoPreview-metadata">Loading...</div>
-      </div>
+      </Card>
     );
   }
 
   return (
-    <div className="PhotoPreview">
+    <Card>
+      <div className="PhotoPreview-owner">
+        <Link to={`/user/${photo.owner.name}`}>{photo.owner.name}</Link>
+      </div>
       <div
         className="PhotoPreview-image"
         style={{
@@ -30,14 +35,11 @@ export const PhotoPreview = ({ loading, photo }) => {
         }}
       />
       <div className="PhotoPreview-metadata">
-        <div className="PhotoPreview-metadata-owner">
-          Uploaded by <em>{photo.owner.name}</em>
-        </div>
         {photo.caption && (
           <div className="PhotoPreview-metadata-caption">{photo.caption}</div>
         )}
       </div>
-    </div>
+    </Card>
   );
 };
 

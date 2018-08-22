@@ -1,0 +1,21 @@
+.PhotoForm button {
+  width: 100%;
+}
+
+.PhotoForm img {
+  width: 100%;
+}
+
+.PhotoForm-photoInput {
+  position: relative;
+}
+
+.PhotoForm-photoInput input {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  top: 0;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}

@@ -6,6 +6,7 @@ export class UserForm extends React.Component {
   state = {
     username: '',
     password: '',
+    error: '',
   };
 
   handleChange(value, field) {
@@ -15,15 +16,23 @@ export class UserForm extends React.Component {
   }
 
   render() {
-    const { username, password } = this.state;
+    const { username, password, error } = this.state;
     const { submitButtonText, id, handleSubmit } = this.props;
+    const outSideError = this.props.error;
     return (
       <form
         onSubmit={(e) => {
           e.preventDefault();
+          if (!this.state.username || !this.state.password) {
+            this.setState({ error: 'Fill all required fields !' });
+            return;
+          }
           handleSubmit({ username, password });
         }}
       >
+        {(error || outSideError) && (
+          <p style={{ color: '#f44336' }}>{error || outSideError}</p>
+        )}
         <TextInput
           id={`UserForm-username-${id}`}
           label="Username"
@@ -32,6 +41,7 @@ export class UserForm extends React.Component {
         />
         <TextInput
           id={`UserForm-password-${id}`}
+          type="password"
           label="Password"
           value={password}
           onChange={(e) => this.handleChange(e.target.value, 'password')}
@@ -45,11 +55,13 @@ export class UserForm extends React.Component {
 }
 
 UserForm.propTypes = {
+  error: PropTypes.string,
   id: PropTypes.string.isRequired,
   submitButtonText: PropTypes.string,
   handleSubmit: PropTypes.func.isRequired,
 };
 
 UserForm.defaultProps = {
+  error: '',
   submitButtonText: 'Submit form',
 };

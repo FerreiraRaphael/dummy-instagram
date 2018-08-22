@@ -9,10 +9,19 @@ const REGISTER = gql`
   }
 `;
 
-export const Register = ({ children }) => (
-  <Mutation mutation={REGISTER}>{children}</Mutation>
+export const Register = ({ children, onError, onCompleted }) => (
+  <Mutation onCompleted={onCompleted} onError={onError} mutation={REGISTER}>
+    {children}
+  </Mutation>
 );
 
 Register.propTypes = {
+  onError: PropTypes.func,
+  onCompleted: PropTypes.func,
   children: PropTypes.func.isRequired,
+};
+
+Register.defaultProps = {
+  onError: () => {},
+  onCompleted: () => {},
 };

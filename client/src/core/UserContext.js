@@ -22,20 +22,16 @@ export class UserProvider extends React.Component {
     this.state = this.persistContext.getState();
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    this.persistContext.persistState(prevState);
+  componentDidUpdate() {
+    this.persistContext.persistState({ ...this.state });
   }
 
-  handleUserChange({ id, name }) {
-    this.setState({
-      user: {
-        id,
-        name,
-      },
-    });
+  handleUserChange(user) {
+    this.setState({ user });
   }
 
   handleTokenChange(token) {
+    console.log(token);
     this.setState({ token });
   }
 

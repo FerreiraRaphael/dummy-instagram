@@ -8,26 +8,22 @@ import { UserContext } from '../../../core/UserContext';
 const RegisterForm = ({ history }) => (
   <UserContext.Consumer>
     {({ setToken }) => (
-      <Register>
+      <Register
+        onCompleted={({ register }) => {
+          setToken(register);
+          history.push('/');
+          window.location.reload();
+        }}
+      >
         {(registerMutation, { loading, error }) => (
           <UserForm
             id="RegisterForm"
-            submitButtonText="Login"
+            submitButtonText="Register"
             loading={loading}
-            error={error}
+            error={error ? 'Username already in use' : ''}
             handleSubmit={({ username, password }) =>
               registerMutation({
                 variables: { username, password },
-                update(
-                  proxy,
-                  {
-                    data: { register },
-                  },
-                ) {
-                  setToken(register);
-                  history.push('/');
-                  window.location.reload();
-                },
               })
             }
           />

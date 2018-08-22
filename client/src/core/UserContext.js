@@ -31,7 +31,6 @@ export class UserProvider extends React.Component {
   }
 
   handleTokenChange(token) {
-    console.log(token);
     this.setState({ token });
   }
 

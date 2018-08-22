@@ -7,7 +7,7 @@ export const Switch = ({ id, value, onChange, label }) => (
     <label htmlFor={`Switch-${id}`}>{label}</label>
     <input
       id={`Switch-${id}`}
-      onChange={(e) => onChange(e.target.value === 'true')}
+      onChange={(e) => onChange(e.nativeEvent.target.checked)}
       value={value}
       className="Switch"
       type="checkbox"

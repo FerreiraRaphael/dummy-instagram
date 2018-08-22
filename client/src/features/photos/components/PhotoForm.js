@@ -6,17 +6,25 @@ import { TextInput } from '../../../shared/components/TextInput';
 import DefaultImage from './PhotoForm-defaultImage.jpg';
 import './PhotoForm.css';
 
+function formatBase64Url(string) {
+  return string ? `data:image/jpeg;base64,${string}` : null;
+}
+
 export class PhotoForm extends React.Component {
-  state = {
-    imageFile: null,
-    image: this.props.value.image,
-    isPrivate: this.props.value.isPrivate,
-    caption: this.props.value.caption,
-    crop: null,
-    imagePreview: null,
-    cropping: false,
-    errorMessage: null,
-  };
+  constructor(props) {
+    super(props);
+    console.log(props);
+    this.state = {
+      imageFile: null,
+      image: formatBase64Url(props.initialValue.image),
+      isPrivate: props.initialValue.isPrivate,
+      caption: props.initialValue.caption,
+      crop: null,
+      imagePreview: formatBase64Url(props.initialValue.image),
+      cropping: false,
+      errorMessage: null,
+    };
+  }
 
   imageElement = null;
 
@@ -109,7 +117,7 @@ export class PhotoForm extends React.Component {
   }
 
   render() {
-    const { id } = this.props;
+    const { id, isNew, onDelete } = this.props;
     const {
       isPrivate,
       image,
@@ -125,8 +133,10 @@ export class PhotoForm extends React.Component {
           {!cropping && (
             <div className="PhotoForm-photoInput">
               <img src={imagePreview || DefaultImage} alt="Upload" />
-              <input type="file" onChange={(e) => this.handleSelectFile(e)} />
-              {!imagePreview && <button>Select a image !</button>}
+              {isNew && (
+                <input type="file" onChange={(e) => this.handleSelectFile(e)} />
+              )}
+              {!imagePreview && isNew && <button>Select a image !</button>}
             </div>
           )}
           {cropping && (
@@ -140,7 +150,9 @@ export class PhotoForm extends React.Component {
                 }
                 onChange={(cropChange) => this.handleChange('crop', cropChange)}
               />
-              {errorMessage && <p>Please crop this image.</p>}
+              {errorMessage && (
+                <p style={{ color: '#f44336' }}>Please crop this image.</p>
+              )}
               <button
                 style={{ display: 'block' }}
                 type="button"
@@ -154,7 +166,7 @@ export class PhotoForm extends React.Component {
         <div style={{ marginBottom: '0.5rem' }}>
           <TextInput
             id={`${id}-caption`}
-            value={caption}
+            value={caption !== null ? caption : this.props.initialValue.caption}
             label="Caption"
             onChange={(e) => this.handleChange('caption', e.target.value)}
           />
@@ -162,32 +174,57 @@ export class PhotoForm extends React.Component {
             <Switch
               label="Is Private ?"
               id={`${id}-isPrivate`}
-              value={isPrivate}
+              value={
+                isPrivate !== null
+                  ? isPrivate
+                  : this.props.initialValue.isPrivate
+              }
               onChange={(value) => this.handleChange('isPrivate', value)}
             />
           </div>
         </div>
-        <button disabled={!this.state.imagePreview} type="submit">
+        <button
+          style={{ marginBottom: '0.5rem' }}
+          disabled={!this.state.imagePreview}
+          type="submit"
+        >
           Save Photo
         </button>
+        {!isNew && (
+          <button
+            style={{
+              marginBottom: '0.5rem',
+              backgroundColor: '#f44336',
+              borderColor: '#f44336',
+            }}
+            type="button"
+            onClick={onDelete}
+          >
+            Delete Photo
+          </button>
+        )}
       </form>
     );
   }
 }
 
 PhotoForm.propTypes = {
+  isNew: PropTypes.bool,
   id: PropTypes.string.isRequired,
   onSubmit: PropTypes.func.isRequired,
-  value: PropTypes.shape({
+  onDelete: PropTypes.func,
+  initialValue: PropTypes.shape({
     image: PropTypes.string.isRequired,
-    isPrivate: PropTypes.bool.isRequired,
-    caption: PropTypes.string.isRequired,
+    isPrivate: PropTypes.bool,
+    caption: PropTypes.string,
   }),
 };
 
 PhotoForm.defaultProps = {
-  value: {
-    image: '',
+  isNew: true,
+  onDelete: () => {},
+  initialValue: {
+    image: null,
     isPrivate: false,
     caption: '',
   },

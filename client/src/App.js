@@ -15,9 +15,11 @@ import { LayoutContext, LayoutProvider } from './core/LayoutContext';
 
 import './App.css';
 import { CurrentUser } from './features/auth/graphql/currentUser';
+import { UserPhotosPage } from './features/photos/pages/UserPhotosPage';
+import { PhotoEditPage } from './features/photos/pages/PhotoEditPage';
 
-function isLoading(layoutConext, userContext) {
-  return layoutConext.loading || layoutConext.overlay || userContext.loading;
+function isLoading(layoutContext, userContext) {
+  return layoutContext.loading || layoutContext.overlay || userContext.loading;
 }
 
 const App = () => (
@@ -28,14 +30,14 @@ const App = () => (
           {({ currentUser, ...userContext }) => (
             <div className="App">
               <LayoutContext.Consumer>
-                {(layoutConext) => (
+                {(layoutContext) => (
                   <div
                     className={
-                      isLoading(layoutConext, userContext) ? 'App-overlay' : ''
+                      isLoading(layoutContext, userContext) ? 'App-overlay' : ''
                     }
                     style={{ height: '100%' }}
                   >
-                    {isLoading(layoutConext, userContext) && <Loading />}
+                    {isLoading(layoutContext, userContext) && <Loading />}
                     <header className="App-header">
                       <div className="App-header-content">
                         <Link to="/">Home</Link>
@@ -69,6 +71,12 @@ const App = () => (
                         redirectTo="/"
                         component={RegisterPage}
                       />
+                      <AuthenticatedRoute
+                        path="/photo/:id"
+                        redirectTo="/login"
+                        component={PhotoEditPage}
+                      />
+                      <Route path="/user/:name" component={UserPhotosPage} />
                     </div>
                   </div>
                 )}

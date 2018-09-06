@@ -32,7 +32,7 @@ Running the server:
 - Install Server dependencies
 `cd server && npm install`
 - Seed Database
-`npm run seed test`
+`npm run db seed test`
 - Start the graphql server
 `npm run watch`
 
